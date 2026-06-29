@@ -4,7 +4,7 @@ import { InventoryClient } from '@/components/inventory/InventoryClient';
 import { redirect } from 'next/navigation';
 
 export default async function WorkerInventoryPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase.from('users').select('shop_id').eq('id', user!.id).single();
   if (!profile?.shop_id) redirect('/dashboard/worker');

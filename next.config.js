@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require('next-pwa')({
+const withPWA = require('@ducanh2912/next-pwa').default({
   dest: 'public',
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
   runtimeCaching: [
-    // Static assets — serve from cache immediately
     {
       urlPattern: /\/_next\/static\/.*/i,
       handler: 'CacheFirst',
@@ -14,7 +13,6 @@ const withPWA = require('next-pwa')({
         expiration: { maxEntries: 500, maxAgeSeconds: 365 * 24 * 60 * 60 },
       },
     },
-    // Pages — network first, fall back to cache
     {
       urlPattern: /\/_next\/data\/.*/i,
       handler: 'NetworkFirst',
@@ -23,7 +21,6 @@ const withPWA = require('next-pwa')({
         expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 },
       },
     },
-    // Supabase API — network first, fall back to cache
     {
       urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
       handler: 'NetworkFirst',
@@ -33,7 +30,6 @@ const withPWA = require('next-pwa')({
         expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 },
       },
     },
-    // Google Fonts — cache first
     {
       urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
       handler: 'CacheFirst',
@@ -42,7 +38,6 @@ const withPWA = require('next-pwa')({
         expiration: { maxEntries: 20, maxAgeSeconds: 365 * 24 * 60 * 60 },
       },
     },
-    // HTML pages — network first
     {
       urlPattern: /^https?.*/,
       handler: 'NetworkFirst',
@@ -57,45 +52,41 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = {
   reactStrictMode: true,
-
-  // Compress responses
   compress: true,
 
-  // Split large packages into separate chunks
+  // Next.js 15: optimizePackageImports moved out of experimental
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', '@supabase/supabase-js'],
   },
 
-  // Security + caching headers
+  // Suppress the big-string webpack cache advisory (cosmetic only, no runtime impact)
+  webpack(config) {
+    config.infrastructureLogging = { level: 'error' };
+    return config;
+  },
+
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
-          { key: 'X-Content-Type-Options',    value: 'nosniff' },
-          { key: 'X-Frame-Options',            value: 'DENY' },
-          { key: 'X-XSS-Protection',           value: '1; mode=block' },
-          { key: 'Referrer-Policy',            value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Content-Type-Options',  value: 'nosniff' },
+          { key: 'X-Frame-Options',          value: 'DENY' },
+          { key: 'X-XSS-Protection',         value: '1; mode=block' },
+          { key: 'Referrer-Policy',          value: 'strict-origin-when-cross-origin' },
         ],
       },
       {
-        // Long cache for static assets (they have content hashes)
         source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/icons/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/manifest.json',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
       },
     ];
   },

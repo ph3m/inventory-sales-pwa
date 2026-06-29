@@ -1,23 +1,31 @@
 'use client';
 
+/**
+ * AdminCharts — Revenue & Transactions line/bar charts for the admin dashboard.
+ *
+ * WHY no dynamic() here:
+ *   • This file is already 'use client', so there is no SSR to worry about.
+ *   • next.config.js already lists 'recharts' in optimizePackageImports, which
+ *     makes Next.js split it into its own async chunk automatically.
+ *   • dynamic() on Recharts *primitive* components (Line, Bar, XAxis …) breaks
+ *     TypeScript because those components carry extra props (e.g. legendType: string)
+ *     that are incompatible with the ComponentType<Props> signature next/dynamic expects.
+ *   • The chart container itself (LineChart, BarChart) wrapped in a single
+ *     dynamic() would work, but is unnecessary given the config-level optimization.
+ */
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import {
+  LineChart, Line,
+  BarChart,  Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from 'recharts';
 import { createClient } from '@/lib/supabase/client';
 import { format, subDays, startOfDay } from 'date-fns';
 
-// Lazy load Recharts — it's heavy (~500kb), don't block first paint
-const LineChart      = dynamic(() => import('recharts').then((m) => m.LineChart),      { ssr: false });
-const Line           = dynamic(() => import('recharts').then((m) => m.Line),           { ssr: false });
-const BarChart       = dynamic(() => import('recharts').then((m) => m.BarChart),       { ssr: false });
-const Bar            = dynamic(() => import('recharts').then((m) => m.Bar),            { ssr: false });
-const XAxis          = dynamic(() => import('recharts').then((m) => m.XAxis),          { ssr: false });
-const YAxis          = dynamic(() => import('recharts').then((m) => m.YAxis),          { ssr: false });
-const CartesianGrid  = dynamic(() => import('recharts').then((m) => m.CartesianGrid),  { ssr: false });
-const Tooltip        = dynamic(() => import('recharts').then((m) => m.Tooltip),        { ssr: false });
-const ResponsiveContainer = dynamic(() => import('recharts').then((m) => m.ResponsiveContainer), { ssr: false });
+type ChartRow = { date: string; revenue: number; transactions: number };
 
 export function AdminCharts() {
-  const [data, setData]       = useState<{ date: string; revenue: number; transactions: number }[]>([]);
+  const [data, setData]       = useState<ChartRow[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase              = createClient();
 
@@ -25,7 +33,9 @@ export function AdminCharts() {
     const fetchData = async () => {
       const from = startOfDay(subDays(new Date(), 13)).toISOString();
       const { data: sales } = await supabase
-        .from('sales').select('total_amount, created_at').gte('created_at', from);
+        .from('sales')
+        .select('total_amount, created_at')
+        .gte('created_at', from);
 
       const map: Record<string, { revenue: number; transactions: number }> = {};
       for (let i = 13; i >= 0; i--) {
@@ -44,8 +54,13 @@ export function AdminCharts() {
   }, []);
 
   const tt = {
-    contentStyle: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', fontSize: '12px' },
-    labelStyle:   { color: 'var(--text-primary)', fontWeight: 600 },
+    contentStyle: {
+      background:   'var(--surface)',
+      border:       '1px solid var(--border)',
+      borderRadius: '12px',
+      fontSize:     '12px',
+    },
+    labelStyle: { color: 'var(--text-primary)', fontWeight: 600 },
   };
 
   if (loading) {
@@ -59,25 +74,51 @@ export function AdminCharts() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Revenue chart */}
       <div className="card">
         <h3 className="text-sm font-semibold text-primary mb-4">Revenue — Last 14 days</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} interval={2} />
-            <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-            <Tooltip {...tt} formatter={(v: number) => [`TZS ${v.toLocaleString()}`, 'Revenue']} />
-            <Line type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2.5} dot={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+              interval={2}
+            />
+            <YAxis
+              tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+              tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+            />
+            <Tooltip
+              {...tt}
+              formatter={(v: number) => [`TZS ${v.toLocaleString()}`, 'Revenue']}
+            />
+            <Line
+              type="monotone"
+              dataKey="revenue"
+              stroke="#6366f1"
+              strokeWidth={2.5}
+              dot={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+      {/* Transactions chart */}
       <div className="card">
         <h3 className="text-sm font-semibold text-primary mb-4">Transactions — Last 14 days</h3>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} interval={2} />
-            <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }} allowDecimals={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+              interval={2}
+            />
+            <YAxis
+              tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+              allowDecimals={false}
+            />
             <Tooltip {...tt} />
             <Bar dataKey="transactions" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
           </BarChart>

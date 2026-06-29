@@ -6,7 +6,7 @@ import { RecentSalesTable } from '@/components/dashboard/RecentSalesTable';
 import { LowStockAlert } from '@/components/dashboard/LowStockAlert';
 
 export default async function AdminDashboard() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Only fetch stable counts (shops/users) server-side
   // Everything else (revenue, stock) is live from the realtime store

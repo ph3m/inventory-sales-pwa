@@ -1,6 +1,6 @@
 {
-  "name": "ShopOS — Inventory & Sales",
-  "short_name": "ShopOS",
+  "name": "Mary Shop — Inventory & Sales",
+  "short_name": "Mary Shop",
   "description": "Multi-shop inventory and sales management system",
   "start_url": "/",
   "display": "standalone",

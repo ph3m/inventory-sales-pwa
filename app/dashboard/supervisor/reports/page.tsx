@@ -4,7 +4,7 @@ import { ReportsClient } from '@/components/reports/ReportsClient';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 
 export default async function SupervisorReportsPage() {
-  const supabase   = createClient();
+  const supabase   = await createClient();
   const now        = new Date();
   const monthStart = startOfMonth(now).toISOString();
   const monthEnd   = endOfMonth(now).toISOString();

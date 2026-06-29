@@ -8,7 +8,7 @@ import { ShopBreakdownCards } from '@/components/dashboard/ShopBreakdownCards';
 import { startOfDay, startOfMonth } from 'date-fns';
 
 export default async function SupervisorDashboard() {
-  const supabase   = createClient();
+  const supabase   = await createClient();
   const today      = startOfDay(new Date()).toISOString();
   const monthStart = startOfMonth(new Date()).toISOString();
 

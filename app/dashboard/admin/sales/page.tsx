@@ -3,7 +3,7 @@ import { DashboardShell } from '@/components/layout/DashboardShell';
 import { SalesClient } from '@/components/sales/SalesClient';
 
 export default async function AdminSalesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase.from('users').select('role, shop_id').eq('id', user!.id).single();
   const [{ data: sales }, { data: products }, { data: shops }] = await Promise.all([

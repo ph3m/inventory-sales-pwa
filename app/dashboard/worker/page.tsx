@@ -6,7 +6,7 @@ import { LowStockAlertWorker } from '@/components/dashboard/LowStockAlertWorker'
 import { redirect } from 'next/navigation';
 
 export default async function WorkerDashboard() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = await supabase
     .from('users')

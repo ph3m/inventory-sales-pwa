@@ -3,7 +3,7 @@ import { DashboardShell } from '@/components/layout/DashboardShell';
 import { SalesClient } from '@/components/sales/SalesClient';
 
 export default async function SupervisorSalesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const [{ data: sales }, { data: shops }] = await Promise.all([
     supabase.from('sales').select('*, users(full_name), shops(name), sale_items(*, products(name))').order('created_at', { ascending: false }).limit(100),

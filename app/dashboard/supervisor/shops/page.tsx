@@ -4,7 +4,7 @@ import { Store, MapPin, Phone, Users } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
 export default async function SupervisorShopsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: shops } = await supabase.from('shops').select('*').order('name');
   const { data: workers } = await supabase.from('users').select('shop_id').eq('role', 'WORKER').not('shop_id', 'is', null);
   const countsByShop: Record<string, number> = {};

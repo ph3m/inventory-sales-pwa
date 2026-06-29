@@ -3,7 +3,7 @@ import { DashboardShell } from '@/components/layout/DashboardShell';
 import { ShopsClient } from '@/components/shops/ShopsClient';
 
 export default async function AdminShopsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: shops } = await supabase.from('shops').select('*').order('created_at', { ascending: false });
   const { data: workerCounts } = await supabase.from('users').select('shop_id').eq('role', 'WORKER').not('shop_id', 'is', null);
 
