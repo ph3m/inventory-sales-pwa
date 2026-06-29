@@ -19,9 +19,9 @@ interface RealtimeState {
   monthRevenue: number;
   lowStockCount: number;
 
-  setTodayRevenue: (v: number) => void;
-  setTodayTransactions: (v: number) => void;
-  setMonthRevenue: (v: number) => void;
+  setTodayRevenue: (v: number | ((prev: number) => number)) => void;
+  setTodayTransactions: (v: number | ((prev: number) => number)) => void;
+  setMonthRevenue: (v: number | ((prev: number) => number)) => void;
   setLowStockCount: (v: number) => void;
 
   // ── Subscription status ───────────────────────────────────
@@ -79,9 +79,9 @@ export const useRealtimeStore = create<RealtimeState>((set) => ({
   monthRevenue: 0,
   lowStockCount: 0,
 
-  setTodayRevenue: (v) => set({ todayRevenue: v }),
-  setTodayTransactions: (v) => set({ todayTransactions: v }),
-  setMonthRevenue: (v) => set({ monthRevenue: v }),
+  setTodayRevenue: (v) => set((s) => ({ todayRevenue: typeof v === 'function' ? v(s.todayRevenue) : v })),
+  setTodayTransactions: (v) => set((s) => ({ todayTransactions: typeof v === 'function' ? v(s.todayTransactions) : v })),
+  setMonthRevenue: (v) => set((s) => ({ monthRevenue: typeof v === 'function' ? v(s.monthRevenue) : v })),
   setLowStockCount: (v) => set({ lowStockCount: v }),
 
   connected: false,

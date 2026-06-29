@@ -25,7 +25,7 @@ export function useRealtimeSync(shopId?: string | null) {
   const user           = useAuthStore((s) => s.user);
   const addNotification = useUIStore((s) => s.addNotification);
   const {
-    setProducts, upsertProduct, removeProduct,
+    setProducts, upsertProduct, deactivateProduct,
     setSales, prependSale,
     setTodayRevenue, setTodayTransactions,
     setMonthRevenue, setLowStockCount,
@@ -123,7 +123,7 @@ export function useRealtimeSync(shopId?: string | null) {
             }
           }
           if (payload.eventType === 'DELETE') {
-            removeProduct((payload.old as DbProduct).id);
+            deactivateProduct((payload.old as DbProduct).id);
           }
         }
       )
