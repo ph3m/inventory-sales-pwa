@@ -91,7 +91,7 @@ export function AdminCharts() {
             />
             <Tooltip
               {...tt}
-              formatter={(v: number) => [`TZS ${v.toLocaleString()}`, 'Revenue']}
+              formatter={(v) => [`TZS ${Number(v ?? 0).toLocaleString()}`, 'Revenue']}
             />
             <Line
               type="monotone"
