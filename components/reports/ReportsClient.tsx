@@ -74,7 +74,7 @@ export function ReportsClient({ dailyData, topProducts, totalRevenue, totalTrans
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
               <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-              <Tooltip {...tt} formatter={(v: number) => formatCurrency(v)} />
+              <Tooltip {...tt} formatter={(v) => formatCurrency(Number(v ?? 0))} />
               <Legend />
               <Line type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2.5} dot={false} name="Revenue" />
               <Line type="monotone" dataKey="profit"  stroke="#10b981" strokeWidth={2}   dot={false} name="Profit" strokeDasharray="4 2" />
