@@ -14,6 +14,15 @@ export function formatCurrency(amount: number, currency = 'TZS') {
   }).format(amount);
 }
 
+// Compact version for stat cards: TSh 175K, TSh 1.2M
+export function formatCurrencyCompact(amount: number, currency = 'TZS') {
+  const prefix = currency === 'TZS' ? 'TSh ' : `${currency} `;
+  if (amount >= 1_000_000) return `${prefix}${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000)     return `${prefix}${(amount / 1_000).toFixed(0)}K`;
+  return `${prefix}${amount}`;
+}
+
+
 export function formatNumber(n: number) {
   return new Intl.NumberFormat().format(n);
 }

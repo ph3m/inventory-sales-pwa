@@ -3,7 +3,7 @@
 import { useRealtimeStore } from '@/store/realtime';
 import { useAuthStore } from '@/store/auth';
 import { StatCard } from '@/components/ui/StatCard';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatCurrencyCompact } from '@/lib/utils';
 import { DollarSign, TrendingUp, ShoppingCart, AlertTriangle, Store, Users, Package } from 'lucide-react';
 
 // ─── Admin stat cards ──────────────────────────────────────────────────────────
@@ -22,8 +22,8 @@ export function AdminStatCards({
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard title="Today's Revenue"      value={formatCurrency(todayRevenue)} icon={DollarSign}    iconColor="brand" />
-        <StatCard title="Monthly Revenue"      value={formatCurrency(monthRevenue)} icon={TrendingUp}    iconColor="green" />
+        <StatCard title="Today's Revenue"      value={formatCurrencyCompact(todayRevenue)} icon={DollarSign}    iconColor="brand" />
+        <StatCard title="Monthly Revenue"      value={formatCurrencyCompact(monthRevenue)} icon={TrendingUp}    iconColor="green" />
         <StatCard title="Today's Transactions" value={todayTransactions}             icon={ShoppingCart}  iconColor="purple" />
         <StatCard title="Low Stock Products"   value={lowStockCount}                 icon={AlertTriangle} iconColor="amber" />
       </div>
@@ -46,7 +46,7 @@ export function WorkerStatCards({ shopId }: { shopId: string }) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <StatCard title="Today's Revenue"  value={formatCurrency(todayRevenue)} icon={DollarSign}   iconColor="brand" />
+      <StatCard title="Today's Revenue"  value={formatCurrencyCompact(todayRevenue)} icon={DollarSign}   iconColor="brand" />
       <StatCard title="Today's Sales"    value={todayTransactions}             icon={ShoppingCart} iconColor="purple" />
       <StatCard title="Products"         value={shopProducts.length}           icon={Package}      iconColor="green" />
       <StatCard title="Low Stock"        value={lowStockCount}                 icon={AlertTriangle} iconColor="amber" />
@@ -64,8 +64,8 @@ export function SupervisorStatCards({ shopCount }: { shopCount: number }) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard title="Today's Revenue"      value={formatCurrency(todayRevenue)} icon={DollarSign}    iconColor="brand" />
-        <StatCard title="Monthly Revenue"      value={formatCurrency(monthRevenue)} icon={TrendingUp}    iconColor="green" />
+        <StatCard title="Today's Revenue"      value={formatCurrencyCompact(todayRevenue)} icon={DollarSign}    iconColor="brand" />
+        <StatCard title="Monthly Revenue"      value={formatCurrencyCompact(monthRevenue)} icon={TrendingUp}    iconColor="green" />
         <StatCard title="Today's Transactions" value={todayTransactions}             icon={ShoppingCart}  iconColor="purple" />
         <StatCard title="Low Stock Products"   value={lowStockCount}                 icon={AlertTriangle} iconColor="amber" />
       </div>

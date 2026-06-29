@@ -30,7 +30,7 @@ export function StatCard({ title, value, icon: Icon, iconColor = 'brand', change
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-xs font-medium text-muted truncate">{title}</p>
-        <p className="text-2xl font-bold text-primary mt-0.5 truncate">{value}</p>
+        <p className="text-xl sm:text-2xl font-bold text-primary mt-0.5 leading-tight break-words">{value}</p>
         {change !== undefined && (
           <div className={cn(
             'flex items-center gap-1 text-xs mt-1 font-medium',
